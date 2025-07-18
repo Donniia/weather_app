@@ -4,7 +4,7 @@ import 'package:weather_app/Presentation/screens/splashScreen.dart';
 
 import '../../../Presentation/screens/Auth/sign_in.dart';
 import '../../../Presentation/screens/Auth/sign_up.dart';
-import '../../../Presentation/screens/home_Screen.dart';
+import '../../../Presentation/screens/Home/home_Screen.dart';
 import '../../../Presentation/screens/start_screen.dart';
 
 class RoutesGenerator {

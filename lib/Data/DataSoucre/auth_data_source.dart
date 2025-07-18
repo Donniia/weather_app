@@ -6,6 +6,7 @@ import 'package:weather_app/Data/supabase.dart';
 abstract class BaseAuthDataSource {
   Future<Result> signUp(UserModel user);
   Future<Result> signIn(UserModel user);
+
 }
 
 @Injectable(as:BaseAuthDataSource )
@@ -44,4 +45,6 @@ class AuthDataSource extends BaseAuthDataSource {
         }
     }
   }
+
+
 }
