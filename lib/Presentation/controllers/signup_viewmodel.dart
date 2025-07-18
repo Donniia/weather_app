@@ -1,15 +1,13 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:injectable/injectable.dart';
 import 'package:weather_app/Core/result.dart';
 import 'package:weather_app/Data/Models/user_model.dart';
-import 'package:weather_app/Data/Repository/auth_repo.dart';
-
+import 'package:weather_app/Domain/usecase/signup_usecase.dart';
 
 class SignUpViewModel extends Cubit<SignUpState> {
-  BaseAuthRepository repository;
-  SignUpViewModel(this.repository) : super(SignUpInitialState());
+  SignUpUseCase useCase;
+  SignUpViewModel(this.useCase) : super(SignUpInitialState());
   signUp(UserModel user) async {
-    var result = await repository.signUp(user);
+    var result = await useCase.signUp(user);
     switch (result) {
       case Success():
         {

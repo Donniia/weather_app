@@ -2,12 +2,7 @@ import 'package:injectable/injectable.dart';
 import 'package:weather_app/Core/result.dart';
 import 'package:weather_app/Data/DataSoucre/auth_data_source.dart';
 import 'package:weather_app/Data/Models/user_model.dart';
-
-
-abstract class BaseAuthRepository {
-  Future<Result> signUp(UserModel user);
-  Future<Result> signIn(UserModel user);
-}
+import '../../Domain/repository/auth_repo.dart';
 
 @Injectable(as: BaseAuthRepository)
 class AuthRepository extends BaseAuthRepository {
@@ -23,4 +18,6 @@ class AuthRepository extends BaseAuthRepository {
   Future<Result> signIn(UserModel user) {
     return dataSource.signIn(user);
   }
+
+
 }
