@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'Core/DI/di.dart';
 import 'Core/utils/routes_manager/routes.dart';
 import 'Core/utils/routes_manager/routes_generator.dart';
 import 'Core/utils/theme.dart';
-import 'Data/DI/di.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
