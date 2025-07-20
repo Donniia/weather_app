@@ -5,13 +5,13 @@ import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:weather_app/Core/utils/app_validators.dart';
 import 'package:weather_app/Core/utils/fonts.dart';
 import 'package:weather_app/Core/utils/routes_manager/routes.dart';
-import 'package:weather_app/Data/DI/di.dart';
 import 'package:weather_app/Data/Models/user_model.dart';
 import 'package:weather_app/Presentation/controllers/signup_viewmodel.dart';
 import 'package:weather_app/Presentation/widgets/custom_button.dart';
 import 'package:weather_app/Presentation/widgets/custom_text_form_field.dart';
 import 'package:weather_app/Presentation/widgets/logo_widget.dart';
 
+import '../../../Core/DI/di.dart';
 import '../../../Core/app_storage.dart';
 
 class SignUpScreen extends StatelessWidget {

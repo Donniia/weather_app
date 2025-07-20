@@ -1,7 +1,8 @@
-import 'package:weather_app/Data/Response/condition.dart';
+import 'package:weather_app/Data/Models/condition_model.dart';
+import 'package:weather_app/Domain/Entities/day.dart';
 
-class Day {
-  Day({
+class DayModel {
+  DayModel({
     required this.maxtempC,
     required this.maxtempF,
     required this.mintempC,
@@ -42,11 +43,11 @@ class Day {
   final int? dailyChanceOfRain;
   final int? dailyWillItSnow;
   final int? dailyChanceOfSnow;
-  final Condition? condition;
+  final ConditionModel? condition;
   final double? uv;
 
-  factory Day.fromJson(Map<String, dynamic> json) {
-    return Day(
+  factory DayModel.fromJson(Map<String, dynamic> json) {
+    return DayModel(
       maxtempC: (json["maxtemp_c"] as num?)?.toDouble(),
       maxtempF: (json["maxtemp_f"] as num?)?.toDouble(),
       mintempC: (json["mintemp_c"] as num?)?.toDouble(),
@@ -67,7 +68,7 @@ class Day {
       dailyChanceOfSnow: json["daily_chance_of_snow"] as int?,
       condition: json["condition"] == null
           ? null
-          : Condition.fromJson(json["condition"]),
+          : ConditionModel.fromJson(json["condition"]),
       uv: (json["uv"] as num?)?.toDouble(),
     );
   }
@@ -94,4 +95,29 @@ class Day {
     "condition": condition?.toJson(),
     "uv": uv,
   };
+
+  Day toDomain() {
+    return Day(
+      maxtempC: maxtempC,
+      maxtempF: maxtempF,
+      mintempC: mintempC,
+      mintempF: mintempF,
+      avgtempC: avgtempC,
+      avgtempF: avgtempF,
+      maxwindMph: maxwindMph,
+      maxwindKph: maxwindKph,
+      totalprecipMm: totalprecipMm,
+      totalprecipIn: totalprecipIn,
+      totalsnowCm: totalsnowCm,
+      avgvisKm: avgvisKm,
+      avgvisMiles: avgvisMiles,
+      avghumidity: avghumidity,
+      dailyWillItRain: dailyWillItRain,
+      dailyChanceOfRain: dailyChanceOfRain,
+      dailyWillItSnow: dailyWillItSnow,
+      dailyChanceOfSnow: dailyChanceOfSnow,
+      condition: condition,
+      uv: uv,
+    );
+  }
 }

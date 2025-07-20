@@ -1,6 +1,6 @@
-import 'package:weather_app/Data/Response/current.dart';
-import 'package:weather_app/Data/Response/forecast.dart';
-import 'package:weather_app/Data/Response/location.dart';
+import 'package:weather_app/Data/Models/current_model.dart';
+import 'package:weather_app/Data/Models/forecast_model.dart';
+import 'package:weather_app/Data/Models/location_model.dart';
 
 class WeatherResponse {
   WeatherResponse({
@@ -9,15 +9,15 @@ class WeatherResponse {
     required this.forecast,
   });
 
-  final Location? location;
-  final Current? current;
-  final Forecast? forecast;
+  final LocationModel? location;
+  final CurrentModel? current;
+  final ForecastModel? forecast;
 
   factory WeatherResponse.fromJson(Map<String, dynamic> json){
     return WeatherResponse(
-      location: json["location"] == null ? null : Location.fromJson(json["location"]),
-      current: json["current"] == null ? null : Current.fromJson(json["current"]),
-      forecast: json["forecast"] == null ? null : Forecast.fromJson(json["forecast"]),
+      location: json["location"] == null ? null : LocationModel.fromJson(json["location"]),
+      current: json["current"] == null ? null : CurrentModel.fromJson(json["current"]),
+      forecast: json["forecast"] == null ? null : ForecastModel.fromJson(json["forecast"]),
     );
   }
 

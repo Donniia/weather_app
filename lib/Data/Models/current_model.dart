@@ -1,7 +1,8 @@
-import 'package:weather_app/Data/Response/condition.dart';
+import 'package:weather_app/Data/Models/condition_model.dart';
+import 'package:weather_app/Domain/Entities/current.dart';
 
-class Current {
-  Current({
+class CurrentModel {
+  CurrentModel({
     required this.lastUpdatedEpoch,
     required this.lastUpdated,
     required this.tempC,
@@ -38,7 +39,7 @@ class Current {
   final double? tempC;
   final double? tempF;
   final int? isDay;
-  final Condition? condition;
+  final ConditionModel? condition;
   final double? windMph;
   final double? windKph;
   final int? windDegree;
@@ -63,14 +64,16 @@ class Current {
   final double? gustMph;
   final double? gustKph;
 
-  factory Current.fromJson(Map<String, dynamic> json) {
-    return Current(
+  factory CurrentModel.fromJson(Map<String, dynamic> json) {
+    return CurrentModel(
       lastUpdatedEpoch: (json["last_updated_epoch"] as num?)?.toDouble(),
       lastUpdated: json["last_updated"],
       tempC: (json["temp_c"] as num?)?.toDouble(),
       tempF: (json["temp_f"] as num?)?.toDouble(),
       isDay: json["is_day"] as int?,
-      condition: json["condition"] == null ? null : Condition.fromJson(json["condition"]),
+      condition: json["condition"] == null
+          ? null
+          : ConditionModel.fromJson(json["condition"]),
       windMph: (json["wind_mph"] as num?)?.toDouble(),
       windKph: (json["wind_kph"] as num?)?.toDouble(),
       windDegree: (json["wind_degree"] as num?)?.toInt(),
@@ -128,4 +131,38 @@ class Current {
     "gust_mph": gustMph,
     "gust_kph": gustKph,
   };
+
+  Current toDomain() {
+    return Current(
+      lastUpdatedEpoch: lastUpdatedEpoch,
+      lastUpdated: lastUpdated,
+      tempC: tempC,
+      tempF: tempF,
+      isDay: isDay,
+      condition: condition,
+      windMph: windMph,
+      windKph: windKph,
+      windDegree: windDegree,
+      windDir: windDir,
+      pressureMb: pressureMb,
+      pressureIn: pressureIn,
+      precipMm: precipMm,
+      precipIn: precipIn,
+      humidity: humidity,
+      cloud: cloud,
+      feelslikeC: feelslikeC,
+      feelslikeF: feelslikeF,
+      windchillC: windchillC,
+      windchillF: windchillF,
+      heatindexC: heatindexC,
+      heatindexF: heatindexF,
+      dewpointC: dewpointC,
+      dewpointF: dewpointF,
+      visKm: visKm,
+      visMiles: visMiles,
+      uv: uv,
+      gustMph: gustMph,
+      gustKph: gustKph,
+    );
+  }
 }

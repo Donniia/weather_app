@@ -5,11 +5,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/Core/app_storage.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:weather_app/Data/DI/di.dart';
-import 'package:weather_app/Presentation/controllers/forecast_viewmodel.dart';
-import 'package:weather_app/Presentation/widgets/forecast_widget.dart';
+import 'package:weather_app/Presentation/controllers/current_forecast_viewmodel.dart';
+import 'package:weather_app/Presentation/controllers/location_viewmodel.dart';
+import 'package:weather_app/Presentation/widgets/current_forecast_widget.dart';
+import 'package:weather_app/Presentation/widgets/daily_forecast_widget.dart';
 
-import '../../../Data/Response/forecast_day.dart';
+import '../../../Core/DI/di.dart';
+import '../../../Domain/Entities/forecast_day.dart';
+import '../../controllers/forecast_viewmodel.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -19,16 +22,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   String? userName = "";
   Position? userPosition;
+  String? formattedDate;
   final ValueNotifier<DateTime> selectedDateNotifier = ValueNotifier(
     DateTime.now(),
   );
-  final viewModel = ForecastViewModel(getIt());
+  final currentForecastviewModel = CurrentForecastViewModel(getIt());
+  final locationViewModel = LocationViewModel(getIt());
+  final dailyForecastViewModel = DailyForecastViewModel(getIt());
 
   @override
   void initState() {
     super.initState();
     loadUserName();
-    initializeForecast();
+    formattedDate = _formatDate(DateTime.now());
+    getUserLocation().then((position) {
+      userPosition = position;
+      initializeForecast(formattedDate!);
+    });
   }
 
   @override
@@ -37,11 +47,11 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  void initializeForecast() async {
-    userPosition = await getUserLocation();
-    final formattedDate = _formatDate(DateTime.now());
+  void initializeForecast(String date) async {
     if (userPosition != null) {
-      viewModel.getForecast(userPosition!, formattedDate);
+      currentForecastviewModel.getCurrentForecast(userPosition!, date);
+      locationViewModel.getLocationData(userPosition!, date);
+      dailyForecastViewModel.getDailyForecast(userPosition!, date);
     }
   }
 
@@ -77,8 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => viewModel,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<LocationViewModel>(create: (context) => locationViewModel),
+        BlocProvider<CurrentForecastViewModel>(
+          create: (context) => currentForecastviewModel,
+        ),
+        BlocProvider<DailyForecastViewModel>(
+          create: (context) => dailyForecastViewModel,
+        ),
+      ],
       child: Scaffold(
         body: Padding(
           padding: EdgeInsets.symmetric(horizontal: 35.w, vertical: 40.h),
@@ -114,80 +132,84 @@ class _HomeScreenState extends State<HomeScreen> {
                 lastDate: DateTime.now().add(Duration(days: 7)),
                 onDateSelected: (selectedDate) {
                   selectedDateNotifier.value = selectedDate;
-                  if (userPosition != null) {
-                    final formattedDate = _formatDate(selectedDate);
-                    viewModel.getForecast(userPosition!, formattedDate);
-                  }
+                 formattedDate = _formatDate(selectedDateNotifier.value);
+                 dailyForecastViewModel.getDailyForecast(userPosition!, formattedDate!);
                 },
                 monthColor: Colors.white70,
                 dayColor: Color(0xFF625b71),
               ),
               SizedBox(height: 20.h),
-              Center(
-                child: Container(
-                  padding: EdgeInsetsGeometry.symmetric(
-                    horizontal: 15.w,
-                    vertical: 25.h,
-                  ),
-                  alignment: Alignment.center,
-                   width: 600.w,
-
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [Color(0xFF3E3963), Color(0xFF191720)],
-                    ),
-                  ),
-                  child: BlocBuilder<ForecastViewModel, ForecastState>(
-                    builder: (context, state) {
-                      if (state is ForeCastLoadingState) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if (state is ForeCastSuccessState) {
-                        final forecastDays = state.forecasts;
-                        final location = state.location;
-                        final currentTemp = state.current;
-
-                        if (forecastDays.isEmpty) {
-                          return Text("No forecast available");
-                        }
-
-                        return ValueListenableBuilder<DateTime>(
-                          valueListenable: selectedDateNotifier,
-                          builder: (context, selectedDate, _) {
-                            final selectedForecast = getSelectedForecast(
-                              forecastDays,
-                              selectedDate,
-                            );
-                            return Column(
-                              children: [
-                                ForecastWidget(
-                                    location: location,
-                                    selectedForecast: selectedForecast,
-                                    currentTemp :currentTemp
-                                )
-
-                              ],
-                            );
-                          },
-                        );
-                      } else if (state is ForeCastErrorState) {
-                        print(state.errorMsg ?? "");
+              BlocBuilder<LocationViewModel, LocationState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case LocationLoadingState():
+                      {
+                        return Text("");
+                      }
+                    case LocationErrorState():
+                      {
+                        return Text(state.errorMsg ?? "");
+                      }
+                    case LocationSuccessState():
+                      {
                         return Center(
                           child: Text(
-                            state.errorMsg ?? "",
-
-                            style: TextStyle(color: Colors.red),
+                            state.location.name ?? "",
+                            style: GoogleFonts.poppins(
+                              fontSize: 25,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                            ),
                           ),
                         );
-                      } else {
-                        return SizedBox.shrink();
                       }
-                    },
-                  ),
-                ),
+                  }
+                },
               ),
+              BlocBuilder<
+                CurrentForecastViewModel,
+                CurrentForecastState
+              >(
+                builder: (context, state) {
+               switch (state) {
+
+                 case CurrentForeCastLoadingState():
+                  {
+                    return Center(child: CircularProgressIndicator(),);
+                  }
+                 case CurrentForeCastSuccessState():
+                 {
+                   var currentTemp =state.current;
+                   return  CurrentForecastWidget(currentTemp: currentTemp);
+                 }
+                 case CurrentForeCastErrorState():
+                  {
+                    return Center(child: Text(state.errorMsg??""),);
+                  }
+               }
+                },
+              ),
+              SizedBox(height: 15.h,),
+              BlocBuilder<DailyForecastViewModel,ForecastState>(builder: (context, state) {
+                switch (state) {
+
+                  case ForecastSuccessState():
+                   {
+                     final selectedForecast = getSelectedForecast(state.forecastList, selectedDateNotifier.value);
+                         return DailyForecastWidget(selectedForecast: selectedForecast);
+                   }
+                  case ForecastErrorState():
+                   {
+                     return Text(state.errorMsg??"");
+                   }
+                  case ForecastLoadingState():
+                    {
+                      return Center(
+                        child:CircularProgressIndicator(),
+                      );
+                    }
+                }
+              },)
             ],
           ),
         ),

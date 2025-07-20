@@ -1,12 +1,14 @@
-class Location {
-  Location({
+import 'package:weather_app/Domain/Entities/location.dart';
+
+class LocationModel {
+  LocationModel({
     required this.name,
     required this.region,
     required this.country,
     required this.lat,
     required this.lon,
     required this.tzId,
-   // required this.localtimeEpoch,
+    // required this.localtimeEpoch,
     required this.localtime,
   });
 
@@ -16,11 +18,11 @@ class Location {
   final double? lat;
   final double? lon;
   final String? tzId;
- // final int localtimeEpoch;
+  // final int localtimeEpoch;
   final String? localtime;
 
-  factory Location.fromJson(Map<String, dynamic> json){
-    return Location(
+  factory LocationModel.fromJson(Map<String, dynamic> json) {
+    return LocationModel(
       name: json["name"],
       region: json["region"],
       country: json["country"],
@@ -43,4 +45,15 @@ class Location {
     "localtime": localtime,
   };
 
+  Location toDomain() {
+    return Location(
+      name: name,
+      region: region,
+      country: country,
+      lat: lat,
+      lon: lon,
+      tzId: tzId,
+      localtime: localtime,
+    );
+  }
 }
