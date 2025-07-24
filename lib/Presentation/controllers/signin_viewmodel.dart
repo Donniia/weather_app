@@ -1,14 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:weather_app/Data/Repository/auth_repo.dart';
+import 'package:weather_app/Domain/usecase/signin_usecase.dart';
+
 
 import '../../Core/result.dart';
 import '../../Data/Models/user_model.dart';
 
 class SignInViewModel extends Cubit<SignInState>{
-  BaseAuthRepository repository;
-  SignInViewModel(this.repository):super(SignInInitialState());
+ SignInUseCase useCase;
+  SignInViewModel(this.useCase):super(SignInInitialState());
   signIn(UserModel user) async {
-    var result = await repository.signIn(user);
+    var result = await useCase.invoke(user);
     switch (result) {
       case Success():
         {

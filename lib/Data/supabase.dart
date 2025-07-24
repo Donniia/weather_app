@@ -1,5 +1,6 @@
 import 'package:injectable/injectable.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:weather_app/Core/app_storage.dart';
 import 'package:weather_app/Data/Models/user_model.dart';
 
 import '../Core/result.dart';
@@ -7,15 +8,16 @@ import '../Core/result.dart';
 @singleton
 class SupaBase {
   final client = Supabase.instance.client;
+
   Future<Result> signUp(UserModel user) async {
     try {
       final response = await client.auth.signUp(
-          email: user.email,
-          password: user.password,
-     );
-      await client.auth.updateUser(UserAttributes(
-        data: {'display_name': user.name},
-      ));
+        email: user.email,
+        password: user.password,
+      );
+      await client.auth.updateUser(
+        UserAttributes(data: {'display_name': user.name}),
+      );
       if (response.user != null) {
         return Success(response.user);
       } else {
@@ -25,7 +27,8 @@ class SupaBase {
       if (e.message.contains('already registered') ||
           e.message.contains('email address is already in use')) {
         return Error(
-            "This email is already registered. Try logging in instead.");
+          "This email is already registered. Try logging in instead.",
+        );
       } else {
         return Error(e.message);
       }
@@ -33,6 +36,7 @@ class SupaBase {
       return Error(e.toString());
     }
   }
+
   Future<Result> signIn(UserModel user) async {
     try {
       final response = await client.auth.signInWithPassword(
@@ -55,4 +59,5 @@ class SupaBase {
       return Error(e.toString());
     }
   }
+
 }

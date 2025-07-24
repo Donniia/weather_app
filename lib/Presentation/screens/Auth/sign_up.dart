@@ -5,19 +5,16 @@ import 'package:panara_dialogs/panara_dialogs.dart';
 import 'package:weather_app/Core/utils/app_validators.dart';
 import 'package:weather_app/Core/utils/fonts.dart';
 import 'package:weather_app/Core/utils/routes_manager/routes.dart';
-import 'package:weather_app/Data/DI/di.dart';
 import 'package:weather_app/Data/Models/user_model.dart';
 import 'package:weather_app/Presentation/controllers/signup_viewmodel.dart';
 import 'package:weather_app/Presentation/widgets/custom_button.dart';
 import 'package:weather_app/Presentation/widgets/custom_text_form_field.dart';
 import 'package:weather_app/Presentation/widgets/logo_widget.dart';
 
-class SignUpScreen extends StatefulWidget {
-  @override
-  State<SignUpScreen> createState() => _SignUpScreenState();
-}
+import '../../../Core/DI/di.dart';
+import '../../../Core/app_storage.dart';
 
-class _SignUpScreenState extends State<SignUpScreen> {
+class SignUpScreen extends StatelessWidget {
   final nameController = TextEditingController();
 
   final emailController = TextEditingController();
@@ -25,6 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   final passwordController = TextEditingController();
 
   var formKey = GlobalKey<FormState>();
+
   var viewModel = SignUpViewModel(getIt());
 
   @override
@@ -118,6 +116,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
               }
             case SignUpSuccessState():
               {
+                AppStorage.saveUserName(nameController.text);
                 PanaraInfoDialog.show(
                   context,
                   title: "Registered Successfully",

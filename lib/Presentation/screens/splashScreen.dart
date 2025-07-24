@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:weather_app/Core/app_storage.dart';
 import 'package:weather_app/Core/utils/assets_manager.dart';
 import 'package:weather_app/Core/utils/fonts.dart';
 import 'package:weather_app/Core/utils/routes_manager/routes.dart';
@@ -14,7 +15,8 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
-  void navigate()  {
+  AppStorage appStorage = AppStorage();
+  void navigate() {
     final session = Supabase.instance.client.auth.currentUser;
     if (session != null) {
       Navigator.pushReplacementNamed(context, Routes.homeRoute);
