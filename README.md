@@ -10,6 +10,9 @@ A few resources to get you started if this is your first Flutter project:
 
 - [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
 - [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+
+  ![App Screenshot](assets/screenShots/ai.png)
+=======
   ![Home Screen of Weather App](assets/screenShots/weatherimg.png)
 - ## 📽 Demo
 
