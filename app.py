@@ -1,45 +1,36 @@
 from flask import Flask, request, jsonify
 import pickle
 import numpy as np
-from flask_cors import CORS
-import traceback
 
 app = Flask(__name__)
-CORS(app)
 
-# Load the model from the pickle file
-file_path = "random_forest_model.pkl"
+# Load the model
+file_path = "random_forest_model.pkl"  # Path to the model file
 with open(file_path, 'rb') as file:
     model = pickle.load(file)
 
+
+# Define a route for the home page
 @app.route('/')
 def home():
-    return "welcome"
+    return "Welcome to the ML Prediction API!"
 
+
+# Define the prediction route
 @app.route('/predict', methods=['POST'])
 def predict():
-    try:
-        data = request.json
-        print("Received data:", data)
+    data = request.json  # Get the JSON data from the request
+    features = data['features']  # Extract the features
 
-        if 'features' not in data:
-            return jsonify({'error': "'features' key not found in request"}), 400
+    # Convert to 2D array (since the model expects 2D input)
+    features = np.array(features).reshape(1, -1)
 
-        features = data['features']
+    # Make the prediction
+    prediction = model.predict(features)
 
+    # Return the prediction as JSON
+    return jsonify({'prediction': prediction.tolist()})
 
-        features = np.array(features).reshape(1, -1)
-
-
-        prediction = model.predict(features)
-
-
-        return jsonify({'prediction': prediction.tolist()})
-
-    except Exception as e:
-        print("Error occurred during prediction:")
-        traceback.print_exc()  # This prints the full error traceback
-        return jsonify({'error': str(e)}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001)

@@ -7,6 +7,7 @@ import 'package:weather_app/Core/app_storage.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:weather_app/Presentation/controllers/current_forecast_viewmodel.dart';
 import 'package:weather_app/Presentation/controllers/location_viewmodel.dart';
+import 'package:weather_app/Presentation/screens/Home/prediction_bloc_section.dart';
 import 'package:weather_app/Presentation/widgets/current_forecast_widget.dart';
 import 'package:weather_app/Presentation/widgets/daily_forecast_widget.dart';
 
@@ -136,6 +137,7 @@ class _HomeScreenState extends State<HomeScreen> {
                  dailyForecastViewModel.getDailyForecast(userPosition!, formattedDate!);
                 },
                 monthColor: Colors.white70,
+
                 dayColor: Color(0xFF625b71),
               ),
               SizedBox(height: 20.h),
@@ -196,7 +198,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   case ForecastSuccessState():
                    {
                      final selectedForecast = getSelectedForecast(state.forecastList, selectedDateNotifier.value);
-                         return DailyForecastWidget(selectedForecast: selectedForecast);
+                         return Column(
+                           children: [
+                             DailyForecastWidget(selectedForecast: selectedForecast),
+                             SizedBox(height: 15.h,),
+                             PredictionBlocSection(selectedForecast: selectedForecast!)
+                           ],
+                         );
                    }
                   case ForecastErrorState():
                    {
