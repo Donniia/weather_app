@@ -42,7 +42,7 @@ class PredictRepoImp extends PredictRepository {
 
   @override
   Future<int?> getPrediction(List<int> data) async {
-    final url = Uri.parse("http://192.168.1.20:5001/predict");
+    final url = Uri.parse("http://192.168.8.163:5001/predict");
     final Map<String, dynamic> body = {'features': data};
     try {
       final response = await http.post(
@@ -55,9 +55,17 @@ class PredictRepoImp extends PredictRepository {
       if (response.statusCode == 200) {
         final jsonBody = json.decode(response.body);
         final prediction = jsonBody['prediction'];
+        print("Request body: ${json.encode(body)}");
+        print("Response status: ${response.statusCode}");
+        print("Response body: ${response.body}");
 
         if (prediction is List && prediction.isNotEmpty) {
           return prediction.first;
+        } else if (prediction is int) {
+          return prediction;
+        } else {
+          print('Unexpected prediction format: $prediction');
+          return null;
         }
       } else {
         print('Failed to get prediction');

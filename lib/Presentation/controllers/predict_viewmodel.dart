@@ -16,8 +16,10 @@ class WeatherPredictionViewModel extends Cubit<PredictionState> {
 
       if (prediction == null) {
         emit(PredictionErrorState("No prediction received"));
+        print("prediction : $prediction");
       } else if (prediction == 1) {
         emit(PredictionSuitableState("Suitable for playing"));
+        print("prediction : $prediction");
       } else {
         emit(PredictionNotRecomState("Not Recommended"));
       }

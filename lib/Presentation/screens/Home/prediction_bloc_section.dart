@@ -79,7 +79,9 @@ class _PredictionBlocSectionState extends State<PredictionBlocSection> {
                     }
                   case PredictionInitialState():
                     {
-                      return SizedBox.shrink();
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
                   case PredictionErrorState():
                     {
