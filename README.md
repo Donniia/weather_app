@@ -27,6 +27,6 @@ Here are some screenshots for the application:
 
 ### 📽️ Demo Video
 
-[▶️ Watch the video](https://drive.google.com/file/d/1coQlb9TF99-YKai08c1HibTitwO5G_3e/view?usp=drive_link)
+[▶️ Watch the video](https://drive.google.com/file/d/1coQlb9TF99-YKai08c1HibTitwO5G_3e/view?usp=sharing)
 
 
